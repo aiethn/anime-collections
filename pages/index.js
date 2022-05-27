@@ -2,14 +2,19 @@ import { css } from "@emotion/react";
 import { gql, useQuery } from "@apollo/client";
 import { Card } from "../components/card";
 import { useState } from "react";
+import ReactPaginate from "react-paginate";
 
 export default function Home() {
-  const [pagination, setPagination] = useState(1);
-  const { loading, error, data } = useQuery(GET_ANIME_DATA, {
-    variables: { page: pagination, perPage: 10 },
+  const [idxpagination, setIdxPagination] = useState(1);
+  const { loading, error, data } = useQuery(GET_ALL_ANIME_DATA, {
+    variables: { page: idxpagination, perPage: 10 },
   });
 
-  const dataChar = data?.Page.characters;
+  const dataAnime = data?.Page.media;
+
+  const paginationHandler = (idx) => {
+    setIdxPagination(idx.selected + 1);
+  };
 
   if (loading) {
     return <h2>Loading...</h2>;
@@ -36,7 +41,7 @@ export default function Home() {
           text-align: center;
         `}
       >
-        Anime Collections
+        Anime List
       </h1>
       <div
         css={css`
@@ -44,29 +49,39 @@ export default function Home() {
           flex-wrap: wrap;
         `}
       >
-        {dataChar.map((char) => (
+        {dataAnime.map((char) => (
           <>
             <Card
               key={char.id}
-              name={char.name.full}
-              nameNative={char.name.native}
-              description={char.description}
-              gender={char.gender}
-              image={char.image.medium}
+              animeID={char.id}
+              title={char.title.english}
+              titleNative={char.title.native}
+              image={char.coverImage.large}
             />
           </>
         ))}
       </div>
-      {pagination - 1 !== 0 && (
-        <button onClick={() => setPagination(pagination - 1)}>Prev</button>
-      )}
-
-      <button onClick={() => setPagination(pagination + 1)}>Next</button>
+      <div>
+        <ReactPaginate
+          previousLabel={"< Previous"}
+          nextLabel={"Next >"}
+          breakLabel={"..."}
+          breakClassName={"break-me"}
+          activeClassName={"active"}
+          containerClassName={"pagination"}
+          subContainerClassName={"pagesPagination"}
+          initialPage={idxpagination - 1}
+          pageCount={data.Page.pageInfo.lastPage}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={paginationHandler}
+        />
+      </div>
     </div>
   );
 }
 
-const GET_ANIME_DATA = gql`
+const GET_ALL_ANIME_DATA = gql`
   query ($page: Int, $perPage: Int) {
     Page(page: $page, perPage: $perPage) {
       pageInfo {
@@ -76,16 +91,14 @@ const GET_ANIME_DATA = gql`
         hasNextPage
         perPage
       }
-      characters {
+      media {
         id
-        gender
-        name {
-          full
+        title {
           native
+          english
         }
-        description(asHtml: true)
-        image {
-          medium
+        coverImage {
+          large
         }
       }
     }
