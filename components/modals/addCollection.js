@@ -1,3 +1,4 @@
+import { logMissingFieldErrors } from "@apollo/client/core/ObservableQuery";
 import { css } from "@emotion/react";
 import { faArrowLeft, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,7 +14,7 @@ export const AddCollection = ({ setShowModalAdd }) => {
       ? localStorage.getItem("collectionName")
       : ""
   );
-  const [showErrorValid, setShowErrorValid] = useState(false);
+  const [showErrorValid, setShowErrorValid] = useState("");
   const [showSuccessSubmit, setShowSuccessSubmit] = useState(false);
   const handleOnChange = (e) => {
     const userInput = e.target.value;
@@ -28,13 +29,23 @@ export const AddCollection = ({ setShowModalAdd }) => {
   console.log(dataCol, "data");
 
   const handleOnSave = () => {
-    if (!name || name.match(/[^a-zA-Z0-9]/)) setShowErrorValid(true);
+    if (!name) setShowErrorValid("empty");
+    else if (name.match(/[^a-zA-Z0-9]/)) setShowErrorValid("character");
     else {
-      dispatch(addNewCol(name.toUpperCase()));
-      setShowErrorValid(false);
-      localStorage.removeItem("collectionName");
-      setName("");
-      setShowSuccessSubmit(true);
+      const isAvail = dataCol.findIndex(
+        (data) => data.colName === name.toUpperCase()
+      );
+
+      if (isAvail === -1) {
+        dispatch(addNewCol(name.toUpperCase()));
+        setShowErrorValid("");
+        localStorage.removeItem("collectionName");
+        setName("");
+        setShowSuccessSubmit(true);
+        setShowModalAdd(true);
+      } else {
+        setShowErrorValid("avail");
+      }
     }
   };
 
@@ -156,7 +167,11 @@ export const AddCollection = ({ setShowModalAdd }) => {
                       color: red;
                     `}
                   >
-                    No special characters allowed!
+                    {showErrorValid === "character" &&
+                      "No special characters allowed!"}
+                    {showErrorValid === "empty" && "Cannot Empty!"}
+                    {showErrorValid === "avail" &&
+                      "Name collection already exist!"}
                   </p>
                 )}
                 {showSuccessSubmit && (
