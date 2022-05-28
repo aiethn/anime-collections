@@ -126,10 +126,11 @@ export const AddItems = ({ setShowModalAdd, anime }) => {
                           text-align: center;
                           align-items: center;
                           border: 1px solid black;
+                          border-radius: 1rem;
                           min-width: 100px;
                           cursor: pointer;
                           ${colSelected.includes(col.id) &&
-                          "background-color: rgba(101, 198, 187, 0.3)"}
+                          "background-color: rgba(22, 160, 133, 0.7)"}
                           ${isAvail && "cursor:default"}
                         `}
                       >

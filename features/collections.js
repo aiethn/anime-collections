@@ -44,6 +44,18 @@ const collectionsSlice = createSlice({
       state.value = newVal;
     },
     removeItemCol: (state, action) => {},
+    editCol: (state, action) => {
+      const newVal = state.value.map(function (col) {
+        if (col.id === action.payload.id) {
+          return {
+            id: col.id,
+            colName: action.payload.newName,
+            colItems: col.colItems,
+          };
+        } else return col;
+      });
+      state.value = newVal;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCollections.fulfilled, (state, action) => {
@@ -52,7 +64,7 @@ const collectionsSlice = createSlice({
   },
 });
 
-export const { addNewCol, addItemToCol, removeCol, removeItemCol } =
+export const { addNewCol, addItemToCol, removeCol, removeItemCol, editCol } =
   collectionsSlice.actions;
 
 export default collectionsSlice.reducer;

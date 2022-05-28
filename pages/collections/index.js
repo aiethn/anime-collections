@@ -1,27 +1,48 @@
 import { css } from "@emotion/react";
 import { ButtonClick } from "../../components/buttonClick";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { BackButton } from "../../components/backButton";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { AddCollection } from "../../components/modals/addCollection";
 import { CardCollection } from "../../components/cardCollection";
-import { fetchCollections } from "../../features/collections";
+import { fetchCollections, removeCol } from "../../features/collections";
 import { EditCollection } from "../../components/modals/editCollection";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { RemoveCollection } from "../../components/modals/removeCollection";
+
+const breakpoints = [640, 768, 1024, 1280, 1536];
+
+const mq = breakpoints.map((bp) => `@media (min-width: ${bp}px)`);
+const maxq = breakpoints.map((bp) => `@media (max-width: ${bp}px)`);
 
 export default function Collections() {
   const dispatch = useDispatch();
   const allCol = useSelector((state) => state.collections.value);
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [showModalEdit, setShowModalEdit] = useState(false);
+  const [showModalRemove, setShowModalRemove] = useState(false);
+  const [idEdit, setIdEdit] = useState("");
+  const [idRemove, setIdRemove] = useState("");
+  const [nameEdit, setNameEdit] = useState("");
+  const [nameRemove, setNameRemove] = useState("");
 
   // useEffect(() => {
   //   dispatch(fetchCollections());
   // }, []);
 
-  console.log(allCol);
+  const handleOnEdit = (id, name) => {
+    setIdEdit(id);
+    setNameEdit(name);
+    setShowModalEdit(true);
+  };
 
-  const handleOnClick = () => {};
+  const handleOnRemove = (id, name) => {
+    setIdRemove(id);
+    setNameRemove(name);
+    setShowModalRemove(true);
+    // dispatch(removeCol(id));
+  };
 
   return (
     <div>
@@ -65,16 +86,86 @@ export default function Collections() {
           `}
         >
           {allCol?.map((col, idx) => (
-            <>
+            <div
+              key={idx}
+              className="container"
+              css={css`
+                margin-top: 3rem;
+                padding: 0.7rem;
+                height: 100%;
+                max-width: 34rem;
+                ${mq[1]} {
+                  width: 25%;
+                }
+                ${maxq[1]} {
+                  width: 33%;
+                }
+                ${maxq[0]} {
+                  width: 50%;
+                }
+              `}
+            >
               <CardCollection
                 setShowModalEdit={setShowModalEdit}
-                key={idx}
                 id={col.id}
                 linkImage={`/collections/${col.id}`}
                 name={col.colName}
-                image="https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx1-CXtrrkMpJ8Zq.png"
+                image="/banner.jpg"
+                usage="collection"
               />
-            </>
+              <div
+                css={css`
+                  display: flex;
+                  justify-content: space-between;
+                  position: relative;
+                `}
+              >
+                <div
+                  onClick={(e) => handleOnEdit(col.id, col.colName)}
+                  css={css`
+                    display: flex;
+                    position: absolute;
+                    left: 0;
+                    cursor: pointer;
+                    &:hover {
+                      color: rgba(101, 198, 187, 0.9);
+                    }
+                  `}
+                >
+                  <FontAwesomeIcon
+                    css={css`
+                      width: 1rem;
+                      margin: 0.5rem;
+                    `}
+                    icon={faPencil}
+                    size="xs"
+                  />
+                  <p>Edit</p>
+                </div>
+
+                <div
+                  onClick={(e) => handleOnRemove(col.id, col.colName)}
+                  css={css`
+                    display: flex;
+                    position: absolute;
+                    right: 0;
+                    cursor: pointer;
+                    &:hover {
+                      color: rgba(101, 198, 187, 0.9);
+                    }
+                  `}
+                >
+                  <FontAwesomeIcon
+                    css={css`
+                      width: 1rem;
+                      margin: 0.5rem;
+                    `}
+                    icon={faTrash}
+                  />
+                  <p>Remove</p>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -86,6 +177,15 @@ export default function Collections() {
       {showModalEdit && (
         <EditCollection
           setShowModalEdit={(e) => setShowModalEdit(!showModalEdit)}
+          colID={idEdit}
+          colName={nameEdit}
+        />
+      )}
+      {showModalRemove && (
+        <RemoveCollection
+          setShowModalRemove={(e) => setShowModalRemove(!showModalRemove)}
+          colID={idRemove}
+          colName={nameRemove}
         />
       )}
     </div>

@@ -31,7 +31,8 @@ export const AddCollection = ({ setShowModalAdd }) => {
 
   const handleOnSave = () => {
     if (!name) setShowErrorValid("empty");
-    else if (name.match(/[^a-zA-Z0-9]/)) setShowErrorValid("character");
+    else if (name.match(/[^a-zA-Z0-9\s]+/)) setShowErrorValid("character");
+    else if (name.length > 16) setShowErrorValid("length");
     else {
       const isAvail = dataCol.findIndex(
         (data) => data.colName === name.toUpperCase()
@@ -172,6 +173,8 @@ export const AddCollection = ({ setShowModalAdd }) => {
                     {showErrorValid === "character" &&
                       "No special characters allowed!"}
                     {showErrorValid === "empty" && "Cannot Empty!"}
+                    {showErrorValid === "length" &&
+                      "No more then 16 characters!"}
                     {showErrorValid === "avail" &&
                       "Name collection already exist!"}
                   </p>

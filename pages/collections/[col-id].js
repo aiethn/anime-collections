@@ -4,6 +4,11 @@ import { css } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { CardCollection } from "../../components/cardCollection";
 
+const breakpoints = [640, 768, 1024, 1280, 1536];
+
+const mq = breakpoints.map((bp) => `@media (min-width: ${bp}px)`);
+const maxq = breakpoints.map((bp) => `@media (max-width: ${bp}px)`);
+
 export default function CollectionDetailsID() {
   const allCol = useSelector((state) => state.collections.value);
   const router = useRouter();
@@ -62,13 +67,35 @@ export default function CollectionDetailsID() {
           `}
         >
           {itemSelected.map((anime, idx) => (
-            <CardCollection
-              key={idx}
-              linkImage={`/anime-details/${anime.animeID}`}
-              id={anime.animeID}
-              name={anime.animeName}
-              image={anime.animeImage}
-            />
+            <>
+              <div
+                key={idx}
+                className="container"
+                css={css`
+                  padding: 0.7rem;
+                  height: 100%;
+                  max-width: 34rem;
+                  ${mq[1]} {
+                    width: 25%;
+                  }
+                  ${maxq[1]} {
+                    width: 33%;
+                  }
+                  ${maxq[0]} {
+                    width: 50%;
+                  }
+                `}
+              >
+                <CardCollection
+                  key={idx}
+                  linkImage={`/anime-details/${anime.animeID}`}
+                  id={anime.animeID}
+                  name={anime.animeName}
+                  image={anime.animeImage}
+                  usage="anime"
+                />
+              </div>
+            </>
           ))}
         </div>
       </div>

@@ -1,10 +1,8 @@
 import { css } from "@emotion/react";
-import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/Link";
-import { useDispatch } from "react-redux";
-import { removeCol } from "../features/collections";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const breakpoints = [640, 768, 1024, 1280, 1536];
 
@@ -12,31 +10,25 @@ const mq = breakpoints.map((bp) => `@media (min-width: ${bp}px)`);
 const maxq = breakpoints.map((bp) => `@media (max-width: ${bp}px)`);
 
 export const CardCollection = (props) => {
-  const dispatch = useDispatch();
-  const { name, image, linkImage, id, setShowModalEdit } = props;
+  const allCol = useSelector((state) => state.collections.value);
+  const { name, image, linkImage, id, usage } = props;
+  const [banner, setBanner] = useState("/banner.jpg");
+  const colSelected = allCol.find((col) => col.id === id);
+
+  useEffect(() => {
+    if (colSelected?.colItems) {
+      if (colSelected.colItems[0]?.animeImage) {
+        setBanner(colSelected.colItems[0].animeImage);
+      }
+    } else {
+      setBanner("/banner.jpg");
+    }
+  }, [colSelected]);
+
   const handleOnEdit = () => {};
-  const handleOnRemove = () => {
-    dispatch(removeCol(id));
-  };
-  console.log(id, "ÏDnya");
+
   return (
-    <div
-      className="container"
-      css={css`
-        padding: 0.7rem;
-        height: 100%;
-        max-width: 34rem;
-        ${mq[1]} {
-          width: 25%;
-        }
-        ${maxq[1]} {
-          width: 33%;
-        }
-        ${maxq[0]} {
-          width: 50%;
-        }
-      `}
-    >
+    <>
       <Link href={linkImage}>
         <div
           css={css`
@@ -76,7 +68,7 @@ export const CardCollection = (props) => {
             >
               <Image
                 className="imgcont"
-                src={image}
+                src={usage === "anime" ? image : banner}
                 width={250}
                 height={400}
                 alt={`Foto ${name}`}
@@ -88,13 +80,13 @@ export const CardCollection = (props) => {
                 padding: 1.5rem;
                 display: flex;
                 flex-direction: column;
-                flex: 1 1 0%;
+                // flex: 1 1 0%;
+                height: 6rem;
               `}
             >
               <p
                 css={css`
                   font-weight: 700;
-
                   ${name.length < 14 ? "font-size: 1rem" : "font-size: 0.7rem;"}
                 `}
               >
@@ -104,52 +96,6 @@ export const CardCollection = (props) => {
           </div>
         </div>
       </Link>
-      {/* <div
-        css={css`
-          display: flex;
-          justify-content: space-between;
-          position: relative;
-        `}
-      >
-        <div
-          onClick={setShowModalEdit}
-          css={css`
-            display: flex;
-            position: absolute;
-            left: 0;
-            cursor: pointer;
-          `}
-        >
-          <FontAwesomeIcon
-            css={css`
-              width: 1rem;
-              margin: 0.5rem;
-            `}
-            icon={faPencil}
-            size="xs"
-          />
-          <p>Edit</p>
-        </div>
-
-        <div
-          onClick={(e) => handleOnRemove()}
-          css={css`
-            display: flex;
-            position: absolute;
-            right: 0;
-            cursor: pointer;
-          `}
-        >
-          <FontAwesomeIcon
-            css={css`
-              width: 1rem;
-              margin: 0.5rem;
-            `}
-            icon={faTrash}
-          />
-          <p>Remove</p>
-        </div>
-      </div> */}
-    </div>
+    </>
   );
 };
