@@ -4,50 +4,30 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewCol } from "../../features/collections";
+import { addItemToCol, addNewCol } from "../../features/collections";
 
-export const AddCollection = ({ setShowModalAdd }) => {
+export const AddItems = ({ setShowModalAdd, anime }) => {
   const dispatch = useDispatch();
-  const dataCol = useSelector((state) => state.collections.value);
-  const [toggleUpdate, setToggleUpdate] = useState(false);
-  const [name, setName] = useState(
-    localStorage.getItem("collectionName")
-      ? localStorage.getItem("collectionName")
-      : ""
-  );
-  const [showErrorValid, setShowErrorValid] = useState("");
-  const [showSuccessSubmit, setShowSuccessSubmit] = useState(false);
-  const handleOnChange = (e) => {
-    const userInput = e.target.value;
-    setName(userInput);
-    localStorage.setItem("collectionName", userInput);
+  const [colSelected, setColSelected] = useState([]);
+  const allCol = useSelector((state) => state.collections.value);
+  const handleOnSave = () => {
+    if (colSelected) {
+      colSelected.forEach((colID) => {
+        dispatch(addItemToCol({ id: colID, items: anime }));
+      });
+      setShowModalAdd(true);
+    }
   };
 
-  useEffect(() => {
-    if (toggleUpdate) {
-      localStorage.setItem("collections", dataCol);
-    }
-  }, [toggleUpdate]);
+  console.log(anime, "anime");
 
-  const handleOnSave = () => {
-    if (!name) setShowErrorValid("empty");
-    else if (name.match(/[^a-zA-Z0-9]/)) setShowErrorValid("character");
-    else {
-      const isAvail = dataCol.findIndex(
-        (data) => data.colName === name.toUpperCase()
-      );
-
-      if (isAvail === -1) {
-        dispatch(addNewCol(name.toUpperCase()));
-        setShowErrorValid("");
-        localStorage.removeItem("collectionName");
-        setName("");
-        setShowSuccessSubmit(true);
-        setShowModalAdd(true);
-        setToggleUpdate(true);
-      } else {
-        setShowErrorValid("avail");
-      }
+  const handleOnClick = (colID) => {
+    const isAvail = colSelected.includes(colID);
+    if (!isAvail) {
+      setColSelected((prev) => [...prev, colID]);
+    } else {
+      const newColSelected = colSelected.filter((col) => col !== colID);
+      setColSelected(newColSelected);
     }
   };
 
@@ -80,7 +60,7 @@ export const AddCollection = ({ setShowModalAdd }) => {
             margin-top: 1.5rem;
             margin-bottom: 1.5rem;
             width: 100%;
-            max-width: 40rem;
+            max-width: 60rem;
             margin-left: auto;
             margin-right: auto;
           `}
@@ -118,52 +98,66 @@ export const AddCollection = ({ setShowModalAdd }) => {
                   font-weight: 700;
                 `}
               >
-                Add New Collection
+                Add New Item To Collections
               </p>
+              {/* <p>Select Collection</p> */}
               <div
                 css={css`
                   margin-bottom: 1.5rem;
                 `}
               >
-                <label
-                  htmlFor="large-input"
+                <div
                   css={css`
-                    display: block;
-                    margin-bottom: 0.5rem;
-                    color: #111827;
-                    font-size: 0.875rem;
-                    line-height: 1.25rem;
-                    font-weight: 500;
-                    text-align: left;
+                    display: flex;
                   `}
                 >
-                  Collection Name
-                </label>
-                <input
-                  type="text"
-                  id="large-input"
-                  value={name}
-                  onChange={(e) => handleOnChange(e)}
-                  css={css`
-                    display: block;
-                    padding: 1rem;
-                    background-color: #f9fafb;
-                    color: #111827;
-                    width: 100%;
-                    border-radius: 0.5rem;
-                    border-width: 1px;
-                    border-color: #d1d5db;
-                    @media (min-width: 640px) {
-                      font-size: 1rem;
-                      line-height: 1.5rem;
-                    }
-                    &:focus {
-                      border-color: blue;
-                      --ring-color: #3b82f6;
-                    }
-                  `}
-                />
-                {showErrorValid && (
+                  {allCol.map(function (col) {
+                    const isAvail = col.colItems.find(
+                      (x) => x?.animeID === anime.animeID
+                    );
+                    return (
+                      <div
+                        key={col.id}
+                        onClick={(e) => !isAvail && handleOnClick(col.id)}
+                        css={css`
+                          padding: 0.5rem;
+                          margin: 0.2rem;
+                          justify-content: center;
+                          text-align: center;
+                          align-items: center;
+                          border: 1px solid black;
+                          min-width: 100px;
+                          cursor: pointer;
+                          ${colSelected.includes(col.id) &&
+                          "background-color: rgba(101, 198, 187, 0.3)"}
+                          ${isAvail && "cursor:default"}
+                        `}
+                      >
+                        <p>{col.colName}</p>{" "}
+                        {isAvail && <p>(already available)</p>}
+                      </div>
+                    );
+                  })}
+
+                  {/* {allCol.map((col) => (
+                    <div
+                      key={col.id}
+                      onClick={(e) => handleOnClick(col.id)}
+                      css={css`
+                        padding: 0.5rem;
+                        margin: 0.2rem;
+                        cursor: pointer;
+                        border: 1px solid black;
+                        min-width: 100px;
+                        ${colSelected.includes(col.id) &&
+                        "background-color: green"}
+                      `}
+                    >
+                      <p>{col.colName}</p>
+                    </div>
+                  ))} */}
+                </div>
+                {/* {showErrorValid && (
                   <p
                     css={css`
                       color: red;
@@ -175,8 +169,8 @@ export const AddCollection = ({ setShowModalAdd }) => {
                     {showErrorValid === "avail" &&
                       "Name collection already exist!"}
                   </p>
-                )}
-                {showSuccessSubmit && (
+                )} */}
+                {/* {showSuccessSubmit && (
                   <p
                     css={css`
                       color: green;
@@ -184,7 +178,7 @@ export const AddCollection = ({ setShowModalAdd }) => {
                   >
                     Collection Added!
                   </p>
-                )}
+                )} */}
               </div>
             </div>
             {/*footer*/}
@@ -213,7 +207,6 @@ export const AddCollection = ({ setShowModalAdd }) => {
                 <button
                   onClick={(e) => {
                     setShowModalAdd(true);
-                    setShowSuccessSubmit(false);
                   }}
                   css={css`
                     padding-top: 0.5rem;
@@ -247,12 +240,6 @@ export const AddCollection = ({ setShowModalAdd }) => {
                     }
                   `}
                 >
-                  {/* <FontAwesomeIcon
-                    icon={faArrowLeft}
-                    css={css`
-                      margin-right: 1rem;
-                    `}
-                  /> */}
                   Cancel
                 </button>
                 <button
@@ -287,13 +274,6 @@ export const AddCollection = ({ setShowModalAdd }) => {
                     }
                   `}
                 >
-                  {/* <FontAwesomeIcon
-                    icon={faCheck}
-                    css={css`
-                      margin-right: 1rem;
-                    `}
-                    size="xs"
-                  /> */}
                   Add
                 </button>
               </div>

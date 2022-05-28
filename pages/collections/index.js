@@ -3,21 +3,29 @@ import { ButtonClick } from "../../components/buttonClick";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { BackButton } from "../../components/backButton";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AddCollection } from "../../components/modals/addCollection";
+import { CardCollection } from "../../components/cardCollection";
+import { fetchCollections } from "../../features/collections";
+import { EditCollection } from "../../components/modals/editCollection";
 
 export default function Collections() {
   const dispatch = useDispatch();
   const allCol = useSelector((state) => state.collections.value);
   const [showModalAdd, setShowModalAdd] = useState(false);
+  const [showModalEdit, setShowModalEdit] = useState(false);
 
-  console.log(showModalAdd);
+  // useEffect(() => {
+  //   dispatch(fetchCollections());
+  // }, []);
+
+  console.log(allCol);
 
   const handleOnClick = () => {};
 
   return (
     <div>
-      <BackButton pathBack={"/"} />
+      {/* <BackButton pathBack={"/"} /> */}
       <div
         css={css`
           margin-left: auto;
@@ -32,7 +40,7 @@ export default function Collections() {
             text-align: center;
           `}
         >
-          All Collections
+          ALL COLLECTIONS
         </h1>
         <div
           css={css`
@@ -48,10 +56,36 @@ export default function Collections() {
             onClick={setShowModalAdd}
           />
         </div>
+        {/* Card */}
+        <div
+          css={css`
+            margin-top: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+          `}
+        >
+          {allCol?.map((col, idx) => (
+            <>
+              <CardCollection
+                setShowModalEdit={setShowModalEdit}
+                key={idx}
+                id={col.id}
+                linkImage={`/collections/${col.id}`}
+                name={col.colName}
+                image="https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx1-CXtrrkMpJ8Zq.png"
+              />
+            </>
+          ))}
+        </div>
       </div>
       {showModalAdd && (
         <AddCollection
           setShowModalAdd={(e) => setShowModalAdd(!showModalAdd)}
+        />
+      )}
+      {showModalEdit && (
+        <EditCollection
+          setShowModalEdit={(e) => setShowModalEdit(!showModalEdit)}
         />
       )}
     </div>

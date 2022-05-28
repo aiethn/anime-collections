@@ -4,6 +4,7 @@ import client from "../apollo-client";
 import { configureStore } from "@reduxjs/toolkit";
 import collectionsReducer from "../features/collections";
 import { Provider } from "react-redux";
+import { Layout } from "../sections/layout";
 
 const store = configureStore({
   reducer: {
@@ -15,7 +16,9 @@ function MyApp({ Component, pageProps }) {
   return (
     <ApolloProvider client={client}>
       <Provider store={store}>
-        <Component {...pageProps} />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </Provider>
     </ApolloProvider>
   );

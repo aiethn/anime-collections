@@ -1,16 +1,22 @@
 import { css } from "@emotion/react";
 import { gql, useQuery } from "@apollo/client";
 import { Card } from "../components/card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
+import { useDispatch } from "react-redux";
+import { fetchCollections } from "../features/collections";
 
 export default function Home() {
+  const dispatch = useDispatch();
   const [idxpagination, setIdxPagination] = useState(1);
   const { loading, error, data } = useQuery(GET_ALL_ANIME_DATA, {
     variables: { page: idxpagination, perPage: 10 },
   });
-
   const dataAnime = data?.Page.media;
+
+  // useEffect(() => {
+  //   dispatch(fetchCollections());
+  // }, []);
 
   const paginationHandler = (idx) => {
     setIdxPagination(idx.selected + 1);
@@ -41,7 +47,7 @@ export default function Home() {
           text-align: center;
         `}
       >
-        Anime List
+        ANIME LIST
       </h1>
       <div
         css={css`
@@ -50,15 +56,13 @@ export default function Home() {
         `}
       >
         {dataAnime.map((char) => (
-          <>
-            <Card
-              key={char.id}
-              animeID={char.id}
-              title={char.title.english}
-              titleNative={char.title.native}
-              image={char.coverImage.large}
-            />
-          </>
+          <Card
+            key={char.id}
+            animeID={char.id}
+            title={char.title.english}
+            titleNative={char.title.native}
+            image={char.coverImage.large}
+          />
         ))}
       </div>
       <div>

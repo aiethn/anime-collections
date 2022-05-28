@@ -4,53 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewCol } from "../../features/collections";
+import { addItemToCol, addNewCol } from "../../features/collections";
 
-export const AddCollection = ({ setShowModalAdd }) => {
-  const dispatch = useDispatch();
-  const dataCol = useSelector((state) => state.collections.value);
-  const [toggleUpdate, setToggleUpdate] = useState(false);
-  const [name, setName] = useState(
-    localStorage.getItem("collectionName")
-      ? localStorage.getItem("collectionName")
-      : ""
-  );
-  const [showErrorValid, setShowErrorValid] = useState("");
-  const [showSuccessSubmit, setShowSuccessSubmit] = useState(false);
-  const handleOnChange = (e) => {
-    const userInput = e.target.value;
-    setName(userInput);
-    localStorage.setItem("collectionName", userInput);
-  };
-
-  useEffect(() => {
-    if (toggleUpdate) {
-      localStorage.setItem("collections", dataCol);
-    }
-  }, [toggleUpdate]);
-
-  const handleOnSave = () => {
-    if (!name) setShowErrorValid("empty");
-    else if (name.match(/[^a-zA-Z0-9]/)) setShowErrorValid("character");
-    else {
-      const isAvail = dataCol.findIndex(
-        (data) => data.colName === name.toUpperCase()
-      );
-
-      if (isAvail === -1) {
-        dispatch(addNewCol(name.toUpperCase()));
-        setShowErrorValid("");
-        localStorage.removeItem("collectionName");
-        setName("");
-        setShowSuccessSubmit(true);
-        setShowModalAdd(true);
-        setToggleUpdate(true);
-      } else {
-        setShowErrorValid("avail");
-      }
-    }
-  };
-
+export const EditCollection = ({ setShowModalEdit, colID }) => {
   return (
     <>
       <div
@@ -80,7 +36,7 @@ export const AddCollection = ({ setShowModalAdd }) => {
             margin-top: 1.5rem;
             margin-bottom: 1.5rem;
             width: 100%;
-            max-width: 40rem;
+            max-width: 60rem;
             margin-left: auto;
             margin-right: auto;
           `}
@@ -118,52 +74,20 @@ export const AddCollection = ({ setShowModalAdd }) => {
                   font-weight: 700;
                 `}
               >
-                Add New Collection
+                Edit collections name
               </p>
+              {/* <p>Select Collection</p> */}
               <div
                 css={css`
                   margin-bottom: 1.5rem;
                 `}
               >
-                <label
-                  htmlFor="large-input"
+                <div
                   css={css`
-                    display: block;
-                    margin-bottom: 0.5rem;
-                    color: #111827;
-                    font-size: 0.875rem;
-                    line-height: 1.25rem;
-                    font-weight: 500;
-                    text-align: left;
+                    display: flex;
                   `}
-                >
-                  Collection Name
-                </label>
-                <input
-                  type="text"
-                  id="large-input"
-                  value={name}
-                  onChange={(e) => handleOnChange(e)}
-                  css={css`
-                    display: block;
-                    padding: 1rem;
-                    background-color: #f9fafb;
-                    color: #111827;
-                    width: 100%;
-                    border-radius: 0.5rem;
-                    border-width: 1px;
-                    border-color: #d1d5db;
-                    @media (min-width: 640px) {
-                      font-size: 1rem;
-                      line-height: 1.5rem;
-                    }
-                    &:focus {
-                      border-color: blue;
-                      --ring-color: #3b82f6;
-                    }
-                  `}
-                />
-                {showErrorValid && (
+                ></div>
+                {/* {showErrorValid && (
                   <p
                     css={css`
                       color: red;
@@ -175,8 +99,8 @@ export const AddCollection = ({ setShowModalAdd }) => {
                     {showErrorValid === "avail" &&
                       "Name collection already exist!"}
                   </p>
-                )}
-                {showSuccessSubmit && (
+                )} */}
+                {/* {showSuccessSubmit && (
                   <p
                     css={css`
                       color: green;
@@ -184,7 +108,7 @@ export const AddCollection = ({ setShowModalAdd }) => {
                   >
                     Collection Added!
                   </p>
-                )}
+                )} */}
               </div>
             </div>
             {/*footer*/}
@@ -212,8 +136,7 @@ export const AddCollection = ({ setShowModalAdd }) => {
               >
                 <button
                   onClick={(e) => {
-                    setShowModalAdd(true);
-                    setShowSuccessSubmit(false);
+                    setShowModalEdit(true);
                   }}
                   css={css`
                     padding-top: 0.5rem;
@@ -247,16 +170,10 @@ export const AddCollection = ({ setShowModalAdd }) => {
                     }
                   `}
                 >
-                  {/* <FontAwesomeIcon
-                    icon={faArrowLeft}
-                    css={css`
-                      margin-right: 1rem;
-                    `}
-                  /> */}
                   Cancel
                 </button>
                 <button
-                  onClick={handleOnSave}
+                  //   onClick={handleOnSave}
                   css={css`
                     padding-top: 0.5rem;
                     padding-bottom: 0.5rem;
@@ -287,13 +204,6 @@ export const AddCollection = ({ setShowModalAdd }) => {
                     }
                   `}
                 >
-                  {/* <FontAwesomeIcon
-                    icon={faCheck}
-                    css={css`
-                      margin-right: 1rem;
-                    `}
-                    size="xs"
-                  /> */}
                   Add
                 </button>
               </div>

@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const ButtonClick = (props) => {
-  const { colId, animeId, logo, text, onClick } = props;
+  const { logo, text, onClick } = props;
   return (
     <button
       type="button"

@@ -11,6 +11,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { BackButton } from "../../components/backButton";
 import { ButtonClick } from "../../components/buttonClick";
+import { useState } from "react";
+import { AddItems } from "../../components/modals/addItems";
 
 const breakpoints = [640, 768, 1024, 1280, 1536];
 
@@ -20,6 +22,7 @@ const maxq = breakpoints.map((bp) => `@media (max-width: ${bp}px)`);
 export default function AnimeDetailsID() {
   const router = useRouter();
   const animeID = router.query["anime-id"];
+  const [showModalAdd, setShowModalAdd] = useState(false);
   const { loading, error, data } = useQuery(GET_ANIME_DETAILS, {
     variables: { id: animeID },
   });
@@ -37,7 +40,7 @@ export default function AnimeDetailsID() {
 
   return (
     <div>
-      <BackButton pathBack={"/"} />
+      {/* <BackButton pathBack={"/"} /> */}
       <div
         css={css`
           margin-left: auto;
@@ -192,11 +195,27 @@ export default function AnimeDetailsID() {
                 justify-items: end;
               `}
             >
-              <ButtonClick logo={faList} text="Add To Collection" />
+              <ButtonClick
+                logo={faList}
+                text="Add To Collection"
+                onClick={setShowModalAdd}
+              />
             </div>
           </div>
         </div>
       </div>
+      {showModalAdd && (
+        <AddItems
+          setShowModalAdd={(e) => setShowModalAdd(!showModalAdd)}
+          anime={{
+            animeID: animeID,
+            animeImage: dataAnime.coverImage.large,
+            animeName: dataAnime.title.english
+              ? dataAnime.title.english
+              : dataAnime.title.native,
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -207,9 +226,10 @@ const GET_ANIME_DETAILS = gql`
       id
       title {
         english
-        native(stylised: true)
+        native
       }
       coverImage {
+        large
         extraLarge
       }
       description(asHtml: true)

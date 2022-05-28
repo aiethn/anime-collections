@@ -14,7 +14,7 @@ export const BackButton = ({ pathBack }) => {
           }
         `}
       >
-        <Link href={pathBack}>
+        {/* <Link href={pathBack}>
           <FontAwesomeIcon
             icon={faArrowLeft}
             css={css`
@@ -25,7 +25,7 @@ export const BackButton = ({ pathBack }) => {
             `}
             size="xl"
           />
-        </Link>
+        </Link> */}
       </div>
     </div>
   );
