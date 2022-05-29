@@ -6,7 +6,7 @@ import { CardCollection } from "../../components/cardCollection";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { ButtonClick } from "../../components/buttonClick";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RemoveItem } from "../../components/modals/removeItem";
 import { EditCollection } from "../../components/modals/editCollection";
 
@@ -22,9 +22,16 @@ export default function CollectionDetailsID() {
   const [showModalRemove, setShowModalRemove] = useState(false);
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [removeAnime, setRemoveAnime] = useState("");
+  const [colSelected, setColSelected] = useState("");
+  const [itemSelected, setItemSelected] = useState("");
   const colID = router.query["col-id"];
-  const colSelected = allCol.find((col) => col.id == colID);
-  const itemSelected = colSelected?.colItems;
+
+  useEffect(() => {
+    const colSelected = allCol.find((col) => col.id == colID);
+    setColSelected(colSelected);
+    const itemSelected = colSelected?.colItems;
+    setItemSelected(itemSelected);
+  }, []);
 
   const handleOnRemove = (animeID, animeName) => {
     setShowModalRemove(true);
