@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
   value: [],
+  isFetching: false,
 };
 
 export const fetchCollections = createAsyncThunk(
@@ -72,7 +73,11 @@ const collectionsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(fetchCollections.pending, (state, action) => {
+      state.isFetching = true;
+    });
     builder.addCase(fetchCollections.fulfilled, (state, action) => {
+      state.isFetching = false;
       state.value = action.payload;
     });
   },

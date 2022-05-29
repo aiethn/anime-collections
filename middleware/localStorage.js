@@ -22,6 +22,57 @@ export const localSave = (store) => (next) => (action) => {
       const restCol = localColArr.filter((col) => col.id !== action.payload);
       window.localStorage.setItem("collections", JSON.stringify(restCol));
     }
+  } else if (action.type === "collections/editCol") {
+    const localCol = window.localStorage.getItem("collections");
+    if (localCol) {
+      const localColArr = JSON.parse(localCol);
+      const restCol = localColArr.map(function (col) {
+        if (col.id === action.payload.id) {
+          return {
+            id: col.id,
+            colName: action.payload.newName,
+            colItems: col.colItems,
+          };
+        } else return col;
+      });
+      window.localStorage.setItem("collections", JSON.stringify(restCol));
+    }
+  } else if (action.type === "collections/addItemToCol") {
+    const localCol = window.localStorage.getItem("collections");
+    if (localCol) {
+      const localColArr = JSON.parse(localCol);
+      const restCol = localColArr.map(function (col) {
+        if (col.id === action.payload.id) {
+          const newItems = col.colItems
+            ? [...col.colItems, action.payload.items]
+            : [action.payload.items];
+          return {
+            id: action.payload.id,
+            colName: col.colName,
+            colItems: newItems,
+          };
+        } else return col;
+      });
+      window.localStorage.setItem("collections", JSON.stringify(restCol));
+    }
+  } else if (action.type === "collections/removeItemFromCol") {
+    const localCol = window.localStorage.getItem("collections");
+    if (localCol) {
+      const localColArr = JSON.parse(localCol);
+      const restCol = localColArr.map(function (col) {
+        if (col.id === action.payload.id) {
+          const newItems = col.colItems.filter(
+            (item) => item.animeID !== action.payload.animeID
+          );
+          return {
+            id: action.payload.id,
+            colName: col.colName,
+            colItems: newItems,
+          };
+        } else return col;
+      });
+      window.localStorage.setItem("collections", JSON.stringify(restCol));
+    }
   }
 
   return next(action);

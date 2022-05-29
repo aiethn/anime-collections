@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchCollections } from "../features/collections";
 
 const breakpoints = [640, 768, 1024, 1280, 1536];
 
@@ -10,10 +11,15 @@ const mq = breakpoints.map((bp) => `@media (min-width: ${bp}px)`);
 const maxq = breakpoints.map((bp) => `@media (max-width: ${bp}px)`);
 
 export const CardCollection = (props) => {
+  const dispatch = useDispatch();
   const allCol = useSelector((state) => state.collections.value);
   const { name, image, linkImage, id, usage } = props;
   const [banner, setBanner] = useState("/banner.jpg");
   const colSelected = allCol.find((col) => col.id === id);
+
+  useEffect(() => {
+    dispatch(fetchCollections());
+  }, []);
 
   useEffect(() => {
     if (colSelected?.colItems) {

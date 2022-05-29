@@ -9,7 +9,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addItemToCol, addNewCol } from "../../features/collections";
+import {
+  addItemToCol,
+  addNewCol,
+  fetchCollections,
+} from "../../features/collections";
 
 export const AddItems = ({ setShowModalAdd, anime }) => {
   const dispatch = useDispatch();
@@ -18,6 +22,10 @@ export const AddItems = ({ setShowModalAdd, anime }) => {
   const [name, setName] = useState("");
   const allCol = useSelector((state) => state.collections.value);
   const [showErrorValid, setShowErrorValid] = useState("");
+
+  useEffect(() => {
+    dispatch(fetchCollections());
+  }, []);
 
   const handleOnSave = () => {
     if (colSelected) {
