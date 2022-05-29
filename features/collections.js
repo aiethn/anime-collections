@@ -62,8 +62,17 @@ const collectionsSlice = createSlice({
       state.value = newVal;
     },
     removeCol: (state, action) => {
-      const newVal = state.value.filter((col) => col.id !== action.payload);
-      state.value = newVal;
+      const localCol = window.localStorage.getItem("collections");
+      if (localCol) {
+        const localColArr = JSON.parse(localCol);
+        const restTodos = localColArr.filter(
+          (col) => col.id !== action.payload
+        );
+        window.localStorage.setItem("collections", JSON.stringify(restTodos));
+        state.localCol = restTodos;
+      }
+      // const newVal = state.value.filter((col) => col.id !== action.payload);
+      // state.value = newVal;
     },
     removeItemFromCol: (state, action) => {
       const newVal = state.value.map(function (col) {
