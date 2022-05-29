@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import Image from "next/image";
-import Link from "next/Link";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 

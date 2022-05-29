@@ -1,4 +1,5 @@
 import { css } from "@emotion/react";
+import uuid from "react-uuid";
 import {
   faArrowLeft,
   faCheck,
@@ -55,7 +56,7 @@ export const AddItems = ({ setShowModalAdd, anime }) => {
         );
 
         if (isAvail === -1) {
-          dispatch(addNewCol(name.toUpperCase()));
+          dispatch(addNewCol({ id: uuid(), name: name.toUpperCase() }));
           setShowErrorValid("");
           setName("");
           setShowInput(false);

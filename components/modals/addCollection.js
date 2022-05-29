@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
+import uuid from "react-uuid";
 import { faArrowLeft, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewCol } from "../../features/collections";
@@ -9,7 +9,6 @@ import { addNewCol } from "../../features/collections";
 export const AddCollection = ({ setShowModalAdd }) => {
   const dispatch = useDispatch();
   const dataCol = useSelector((state) => state.collections.value);
-  const [toggleUpdate, setToggleUpdate] = useState(false);
   const [name, setName] = useState(
     localStorage.getItem("collectionName")
       ? localStorage.getItem("collectionName")
@@ -23,29 +22,22 @@ export const AddCollection = ({ setShowModalAdd }) => {
     localStorage.setItem("collectionName", userInput);
   };
 
-  useEffect(() => {
-    if (toggleUpdate) {
-      localStorage.setItem("collections", dataCol);
-    }
-  }, [toggleUpdate]);
-
   const handleOnSave = () => {
     if (!name) setShowErrorValid("empty");
+    else if (!name.match(/(?!^\s+$)^.*$/)) setShowErrorValid("space");
     else if (name.match(/[^a-zA-Z0-9\s]+/)) setShowErrorValid("character");
     else if (name.length > 16) setShowErrorValid("length");
     else {
       const isAvail = dataCol.findIndex(
         (data) => data.colName === name.toUpperCase()
       );
-
       if (isAvail === -1) {
-        dispatch(addNewCol(name.toUpperCase()));
+        dispatch(addNewCol({ id: uuid(), name: name.toUpperCase() }));
         setShowErrorValid("");
         localStorage.removeItem("collectionName");
         setName("");
         setShowSuccessSubmit(true);
         setShowModalAdd(true);
-        setToggleUpdate(true);
       } else {
         setShowErrorValid("avail");
       }
@@ -173,6 +165,8 @@ export const AddCollection = ({ setShowModalAdd }) => {
                     {showErrorValid === "character" &&
                       "No special characters allowed!"}
                     {showErrorValid === "empty" && "Cannot Empty!"}
+                    {showErrorValid === "space" &&
+                      "Cannot Only Contain Whitespace!"}
                     {showErrorValid === "length" &&
                       "No more then 16 characters!"}
                     {showErrorValid === "avail" &&

@@ -1,28 +1,50 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import uuid from "react-uuid";
+
+const getInitialTodo = () => {
+  if (typeof window !== "undefined") {
+    const localCollections = window.localStorage.getItem("collections");
+    if (localCollections) {
+      return JSON.parse(localCollections);
+    }
+    window.localStorage.setItem("collections", JSON.stringify([]));
+    return [];
+  }
+};
 
 const initialState = {
   value: [],
 };
 
-export const fetchCollections = createAsyncThunk(
-  "collections/fetchCollections",
-  () => {
-    const col = JSON.parse(localStorage.getItem("collectionss"));
-    return col ? col : [];
-  }
-);
+// export const fetchCollections = createAsyncThunk(
+//   "collections/fetchCollections",
+//   () => {
+//     const col = JSON.parse(localStorage.getItem("collectionss"));
+//     return col ? col : [];
+//   }
+// );
 
 const collectionsSlice = createSlice({
   name: "collections",
   initialState,
   reducers: {
     addNewCol: (state, action) => {
-      state.value.push({
-        id: uuid(),
-        colName: action.payload,
+      const newVal = {
+        id: action.payload.id,
+        colName: action.payload.name,
         colItems: [],
-      });
+      };
+      state.value.push(newVal);
+      // const localCol = window.localStorage.getItem("collections");
+      // if (localCol) {
+      //   const localColArr = JSON.parse(localCol);
+      //   localColArr.push({ ...newVal });
+      //   window.localStorage.setItem("collections", JSON.stringify(localColArr));
+      // } else {
+      //   window.localStorage.setItem(
+      //     "collections",
+      //     JSON.stringify([{ ...newVal }])
+      //   );
+      // }
     },
     addItemToCol: (state, action) => {
       const newVal = state.value.map(function (col) {
@@ -71,11 +93,11 @@ const collectionsSlice = createSlice({
       state.value = newVal;
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(fetchCollections.fulfilled, (state, action) => {
-      state.value = action.payload;
-    });
-  },
+  // extraReducers: (builder) => {
+  //   builder.addCase(fetchCollections.fulfilled, (state, action) => {
+  //     state.value = action.payload;
+  //   });
+  // },
 });
 
 export const {
