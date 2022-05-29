@@ -1,5 +1,4 @@
 import { css } from "@emotion/react";
-import uuid from "react-uuid";
 import { faArrowLeft, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";

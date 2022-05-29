@@ -12,13 +12,13 @@ const getInitialTodo = () => {
 };
 
 const initialState = {
-  value: [],
+  value: getInitialTodo(),
 };
 
 // export const fetchCollections = createAsyncThunk(
 //   "collections/fetchCollections",
 //   () => {
-//     const col = JSON.parse(localStorage.getItem("collectionss"));
+//     const col = JSON.parse(localStorage.getItem("collections"));
 //     return col ? col : [];
 //   }
 // );
@@ -34,17 +34,17 @@ const collectionsSlice = createSlice({
         colItems: [],
       };
       state.value.push(newVal);
-      // const localCol = window.localStorage.getItem("collections");
-      // if (localCol) {
-      //   const localColArr = JSON.parse(localCol);
-      //   localColArr.push({ ...newVal });
-      //   window.localStorage.setItem("collections", JSON.stringify(localColArr));
-      // } else {
-      //   window.localStorage.setItem(
-      //     "collections",
-      //     JSON.stringify([{ ...newVal }])
-      //   );
-      // }
+      const localCol = window.localStorage.getItem("collections");
+      if (localCol) {
+        const localColArr = JSON.parse(localCol);
+        localColArr.push({ ...newVal });
+        window.localStorage.setItem("collections", JSON.stringify(localColArr));
+      } else {
+        window.localStorage.setItem(
+          "collections",
+          JSON.stringify([{ ...newVal }])
+        );
+      }
     },
     addItemToCol: (state, action) => {
       const newVal = state.value.map(function (col) {

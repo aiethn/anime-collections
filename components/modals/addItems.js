@@ -233,6 +233,8 @@ export const AddItems = ({ setShowModalAdd, anime }) => {
                       "Cannot Only Contain Whitespace!"}
                     {showErrorValid === "avail" &&
                       "Name collection already exist!"}
+                    {showErrorValid === "length" &&
+                      "No more then 16 characters!"}
                   </p>
                 )}
                 {/* {showSuccessSubmit && (
