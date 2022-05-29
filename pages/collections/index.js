@@ -33,9 +33,9 @@ export default function Collections() {
   const [nameEdit, setNameEdit] = useState("");
   const [nameRemove, setNameRemove] = useState("");
 
-  // useEffect(() => {
-  //   dispatch(fetchCollections());
-  // }, []);
+  useEffect(() => {
+    dispatch(fetchCollections());
+  }, []);
 
   const handleOnEdit = (id, name) => {
     setIdEdit(id);

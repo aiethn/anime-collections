@@ -1,27 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-const getInitialTodo = () => {
-  if (typeof window !== "undefined") {
-    const localCollections = window.localStorage.getItem("collections");
-    if (localCollections) {
-      return JSON.parse(localCollections);
-    }
-    window.localStorage.setItem("collections", JSON.stringify([]));
-    return [];
-  }
-};
-
 const initialState = {
-  value: getInitialTodo(),
+  value: [],
 };
 
-// export const fetchCollections = createAsyncThunk(
-//   "collections/fetchCollections",
-//   () => {
-//     const col = JSON.parse(localStorage.getItem("collections"));
-//     return col ? col : [];
-//   }
-// );
+export const fetchCollections = createAsyncThunk(
+  "collections/fetchCollections",
+  () => {
+    const col = JSON.parse(localStorage.getItem("collections"));
+    return col ? col : [];
+  }
+);
 
 const collectionsSlice = createSlice({
   name: "collections",
@@ -34,17 +23,6 @@ const collectionsSlice = createSlice({
         colItems: [],
       };
       state.value.push(newVal);
-      const localCol = window.localStorage.getItem("collections");
-      if (localCol) {
-        const localColArr = JSON.parse(localCol);
-        localColArr.push({ ...newVal });
-        window.localStorage.setItem("collections", JSON.stringify(localColArr));
-      } else {
-        window.localStorage.setItem(
-          "collections",
-          JSON.stringify([{ ...newVal }])
-        );
-      }
     },
     addItemToCol: (state, action) => {
       const newVal = state.value.map(function (col) {
@@ -62,17 +40,8 @@ const collectionsSlice = createSlice({
       state.value = newVal;
     },
     removeCol: (state, action) => {
-      const localCol = window.localStorage.getItem("collections");
-      if (localCol) {
-        const localColArr = JSON.parse(localCol);
-        const restTodos = localColArr.filter(
-          (col) => col.id !== action.payload
-        );
-        window.localStorage.setItem("collections", JSON.stringify(restTodos));
-        state.localCol = restTodos;
-      }
-      // const newVal = state.value.filter((col) => col.id !== action.payload);
-      // state.value = newVal;
+      const newVal = state.value.filter((col) => col.id !== action.payload);
+      state.value = newVal;
     },
     removeItemFromCol: (state, action) => {
       const newVal = state.value.map(function (col) {
@@ -102,11 +71,11 @@ const collectionsSlice = createSlice({
       state.value = newVal;
     },
   },
-  // extraReducers: (builder) => {
-  //   builder.addCase(fetchCollections.fulfilled, (state, action) => {
-  //     state.value = action.payload;
-  //   });
-  // },
+  extraReducers: (builder) => {
+    builder.addCase(fetchCollections.fulfilled, (state, action) => {
+      state.value = action.payload;
+    });
+  },
 });
 
 export const {

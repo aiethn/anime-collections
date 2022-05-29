@@ -11,8 +11,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { BackButton } from "../../components/backButton";
 import { ButtonClick } from "../../components/buttonClick";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AddItems } from "../../components/modals/addItems";
+import { fetchCollections } from "../../features/collections";
+import { useDispatch } from "react-redux";
 
 const breakpoints = [640, 768, 1024, 1280, 1536];
 
@@ -20,14 +22,18 @@ const mq = breakpoints.map((bp) => `@media (min-width: ${bp}px)`);
 const maxq = breakpoints.map((bp) => `@media (max-width: ${bp}px)`);
 
 export default function AnimeDetailsID() {
+  const dispatch = useDispatch();
   const router = useRouter();
   const animeID = router.query["anime-id"];
   const [showModalAdd, setShowModalAdd] = useState(false);
   const { loading, error, data } = useQuery(GET_ANIME_DETAILS, {
     variables: { id: animeID },
   });
-
   const dataAnime = data?.Media;
+
+  useEffect(() => {
+    dispatch(fetchCollections());
+  }, []);
 
   if (loading) {
     return <h2>Loading...</h2>;
