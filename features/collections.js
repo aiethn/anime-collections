@@ -43,7 +43,21 @@ const collectionsSlice = createSlice({
       const newVal = state.value.filter((col) => col.id !== action.payload);
       state.value = newVal;
     },
-    removeItemCol: (state, action) => {},
+    removeItemFromCol: (state, action) => {
+      const newVal = state.value.map(function (col) {
+        if (col.id === action.payload.id) {
+          const newItems = col.colItems.filter(
+            (item) => item.animeID !== action.payload.animeID
+          );
+          return {
+            id: action.payload.id,
+            colName: col.colName,
+            colItems: newItems,
+          };
+        } else return col;
+      });
+      state.value = newVal;
+    },
     editCol: (state, action) => {
       const newVal = state.value.map(function (col) {
         if (col.id === action.payload.id) {
@@ -64,7 +78,12 @@ const collectionsSlice = createSlice({
   },
 });
 
-export const { addNewCol, addItemToCol, removeCol, removeItemCol, editCol } =
-  collectionsSlice.actions;
+export const {
+  addNewCol,
+  addItemToCol,
+  removeCol,
+  removeItemFromCol,
+  editCol,
+} = collectionsSlice.actions;
 
 export default collectionsSlice.reducer;

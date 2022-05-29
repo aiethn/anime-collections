@@ -1,6 +1,11 @@
 import { css } from "@emotion/react";
 import { ButtonClick } from "../../components/buttonClick";
-import { faPencil, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faPencil,
+  faPlus,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { BackButton } from "../../components/backButton";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -19,6 +24,7 @@ const maxq = breakpoints.map((bp) => `@media (max-width: ${bp}px)`);
 export default function Collections() {
   const dispatch = useDispatch();
   const allCol = useSelector((state) => state.collections.value);
+  const [showEdit, setShowEdit] = useState(false);
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [showModalRemove, setShowModalRemove] = useState(false);
@@ -71,10 +77,24 @@ export default function Collections() {
             margin-right: 3rem;
           `}
         >
+          <div
+            css={css`
+              margin-right: 1rem;
+            `}
+          >
+            <ButtonClick
+              logo={faPlus}
+              text="Add New Collection"
+              onClick={setShowModalAdd}
+            />
+          </div>
           <ButtonClick
-            logo={faPlus}
-            text="Add New Collection"
-            onClick={setShowModalAdd}
+            css={css`
+              margin-left: 1rem;
+            `}
+            logo={!showEdit ? faPencil : faCheck}
+            text={!showEdit ? "Edit Collection" : "Done Edit"}
+            onClick={(e) => setShowEdit(!showEdit)}
           />
         </div>
         {/* Card */}
@@ -113,58 +133,60 @@ export default function Collections() {
                 image="/banner.jpg"
                 usage="collection"
               />
-              <div
-                css={css`
-                  display: flex;
-                  justify-content: space-between;
-                  position: relative;
-                `}
-              >
+              {showEdit && (
                 <div
-                  onClick={(e) => handleOnEdit(col.id, col.colName)}
                   css={css`
                     display: flex;
-                    position: absolute;
-                    left: 0;
-                    cursor: pointer;
-                    &:hover {
-                      color: rgba(101, 198, 187, 0.9);
-                    }
+                    justify-content: space-between;
+                    position: relative;
                   `}
                 >
-                  <FontAwesomeIcon
+                  <div
+                    onClick={(e) => handleOnEdit(col.id, col.colName)}
                     css={css`
-                      width: 1rem;
-                      margin: 0.5rem;
+                      display: flex;
+                      position: absolute;
+                      left: 0;
+                      cursor: pointer;
+                      &:hover {
+                        color: rgba(101, 198, 187, 0.9);
+                      }
                     `}
-                    icon={faPencil}
-                    size="xs"
-                  />
-                  <p>Edit</p>
-                </div>
+                  >
+                    <FontAwesomeIcon
+                      css={css`
+                        width: 1rem;
+                        margin: 0.5rem;
+                      `}
+                      icon={faPencil}
+                      size="xs"
+                    />
+                    <p>Edit</p>
+                  </div>
 
-                <div
-                  onClick={(e) => handleOnRemove(col.id, col.colName)}
-                  css={css`
-                    display: flex;
-                    position: absolute;
-                    right: 0;
-                    cursor: pointer;
-                    &:hover {
-                      color: rgba(101, 198, 187, 0.9);
-                    }
-                  `}
-                >
-                  <FontAwesomeIcon
+                  <div
+                    onClick={(e) => handleOnRemove(col.id, col.colName)}
                     css={css`
-                      width: 1rem;
-                      margin: 0.5rem;
+                      display: flex;
+                      position: absolute;
+                      right: 0;
+                      cursor: pointer;
+                      &:hover {
+                        color: rgba(101, 198, 187, 0.9);
+                      }
                     `}
-                    icon={faTrash}
-                  />
-                  <p>Remove</p>
+                  >
+                    <FontAwesomeIcon
+                      css={css`
+                        width: 1rem;
+                        margin: 0.5rem;
+                      `}
+                      icon={faTrash}
+                    />
+                    <p>Remove</p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           ))}
         </div>

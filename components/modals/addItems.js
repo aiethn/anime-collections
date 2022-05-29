@@ -46,6 +46,7 @@ export const AddItems = ({ setShowModalAdd, anime }) => {
     if (!showInput) setShowInput(true);
     else {
       if (!name) setShowErrorValid("empty");
+      else if (!name.match(/(?!^\s+$)^.*$/)) setShowErrorValid("space");
       else if (name.match(/[^a-zA-Z0-9\s]+/)) setShowErrorValid("character");
       else if (name.length > 16) setShowErrorValid("length");
       else {
@@ -227,6 +228,8 @@ export const AddItems = ({ setShowModalAdd, anime }) => {
                     {showErrorValid === "character" &&
                       "No special characters allowed!"}
                     {showErrorValid === "empty" && "Cannot Empty!"}
+                    {showErrorValid === "space" &&
+                      "Cannot Only Contain Whitespace!"}
                     {showErrorValid === "avail" &&
                       "Name collection already exist!"}
                   </p>

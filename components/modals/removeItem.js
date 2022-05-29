@@ -1,30 +1,15 @@
 import { css } from "@emotion/react";
-import { faArrowLeft, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addItemToCol, addNewCol, editCol } from "../../features/collections";
+import { useDispatch } from "react-redux";
+import { removeItemFromCol } from "../../features/collections";
 
-export const EditCollection = ({ setShowModalEdit, colID, colName }) => {
+export const RemoveItem = ({ setShowModalRemove, colID, anime }) => {
   const dispatch = useDispatch();
-  const [name, setName] = useState("");
-  const [showErrorValid, setShowErrorValid] = useState("");
-  const handleOnChange = (e) => {
-    const userInput = e.target.value;
-    setName(userInput);
-  };
 
-  const handleOnSave = (colId, colName) => {
-    if (!name) setShowErrorValid("empty");
-    else if (!name.match(/(?!^\s+$)^.*$/)) setShowErrorValid("space");
-    else if (name.match(/[^a-zA-Z0-9\s]/)) setShowErrorValid("character");
-    else if (name.length > 16) setShowErrorValid("length");
-    else {
-      setShowModalEdit(true);
-      setShowErrorValid("");
-      dispatch(editCol({ id: colID, newName: name.toUpperCase() }));
-    }
+  const handleOnSave = () => {
+    setShowModalRemove(true);
+    dispatch(removeItemFromCol({ id: colID, animeID: anime.animeID }));
   };
 
   return (
@@ -85,6 +70,23 @@ export const EditCollection = ({ setShowModalEdit, colID, colName }) => {
                 justify-content: center;
               `}
             >
+              <div
+                css={css`
+                  width: 100%;
+                  display: flex;
+                  text-align: center;
+                  justify-content: center;
+                `}
+              >
+                <FontAwesomeIcon
+                  css={css`
+                    width: 5rem;
+                    color: rgba(207, 0, 15, 0.5);
+                  `}
+                  icon={faTrash}
+                  size="lg"
+                />
+              </div>
               <p
                 css={css`
                   padding-top: 1rem;
@@ -94,7 +96,7 @@ export const EditCollection = ({ setShowModalEdit, colID, colName }) => {
                   font-weight: 700;
                 `}
               >
-                Edit {colName} Name
+                Remove {anime.animeName} from Collection?
               </p>
               {/* <p>Select Collection</p> */}
               <div
@@ -105,34 +107,12 @@ export const EditCollection = ({ setShowModalEdit, colID, colName }) => {
                 <div
                   css={css`
                     display: flex;
+                    text-align: center;
+                    width: 100%;
+                    justify-content: center;
                   `}
-                >
-                  <input
-                    type="text"
-                    id="large-input"
-                    value={name}
-                    onChange={(e) => handleOnChange(e)}
-                    css={css`
-                      display: block;
-                      padding: 1rem;
-                      background-color: #f9fafb;
-                      color: #111827;
-                      width: 100%;
-                      border-radius: 0.5rem;
-                      border-width: 1px;
-                      border-color: #d1d5db;
-                      @media (min-width: 640px) {
-                        font-size: 1rem;
-                        line-height: 1.5rem;
-                      }
-                      &:focus {
-                        border-color: blue;
-                        --ring-color: #3b82f6;
-                      }
-                    `}
-                  />
-                </div>
-                {showErrorValid && (
+                ></div>
+                {/* {showErrorValid && (
                   <p
                     css={css`
                       color: red;
@@ -141,14 +121,12 @@ export const EditCollection = ({ setShowModalEdit, colID, colName }) => {
                     {showErrorValid === "character" &&
                       "No special characters allowed!"}
                     {showErrorValid === "empty" && "Cannot Empty!"}
-                    {showErrorValid === "space" &&
-                      "Cannot Only Contain Whitespace!"}
                     {showErrorValid === "length" &&
                       "No more then 16 characters!"}
                     {showErrorValid === "avail" &&
                       "Name collection already exist!"}
                   </p>
-                )}
+                )} */}
                 {/* {showSuccessSubmit && (
                   <p
                     css={css`
@@ -185,7 +163,7 @@ export const EditCollection = ({ setShowModalEdit, colID, colName }) => {
               >
                 <button
                   onClick={(e) => {
-                    setShowModalEdit(true);
+                    setShowModalRemove(true);
                   }}
                   css={css`
                     padding-top: 0.5rem;
@@ -253,7 +231,7 @@ export const EditCollection = ({ setShowModalEdit, colID, colName }) => {
                     }
                   `}
                 >
-                  Edit
+                  Remove
                 </button>
               </div>
             </div>
