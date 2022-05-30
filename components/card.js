@@ -59,6 +59,7 @@ export function Card(props) {
           overflow: hidden;
           border: 2px solid rgb(229 231 235);
           border-radius: 0.375rem;
+          cursor: pointer;
           ${
             bulkAdd &&
             animeSelected.find(
@@ -101,18 +102,21 @@ export function Card(props) {
               justify-content: space-between;
             `}
           >
-            <p
-              css={css`
-                font-weight: 700;
-                text-align: center;
-                // font-size: 1.2rem;
-                ${title?.length > 20 || titleNative?.length > 20
-                  ? "font-size: 1rem"
-                  : "font-size: 1.2rem"}
-              `}
-            >
-              {title ? title : titleNative}
-            </p>
+            <Link href={`/anime-details/${animeID}`}>
+              <p
+                css={css`
+                  font-weight: 700;
+                  text-align: center;
+                  cursor: pointer;
+                  // font-size: 1.2rem;
+                  ${title?.length > 20 || titleNative?.length > 20
+                    ? "font-size: 1rem"
+                    : "font-size: 1.2rem"}
+                `}
+              >
+                {title ? title : titleNative}
+              </p>
+            </Link>
             <div
               css={css`
                 display: flex;

@@ -7,6 +7,7 @@ import {
   addNewCol,
   fetchCollections,
 } from "../../features/collections";
+import Link from "next/link";
 
 export const InfoCollection = ({ setShowModalInfo, anime }) => {
   const dispatch = useDispatch();
@@ -154,6 +155,8 @@ export const InfoCollection = ({ setShowModalInfo, anime }) => {
                   css={css`
                     display: flex;
                     flex-wrap: wrap;
+                    justify-content: center;
+                    align-items: center;
                   `}
                 >
                   {!showInput ? (
@@ -163,25 +166,66 @@ export const InfoCollection = ({ setShowModalInfo, anime }) => {
                       );
                       if (isAvail) {
                         return (
-                          <div
-                            key={col.id}
-                            onClick={(e) => !isAvail && handleOnClick(col.id)}
-                            css={css`
-                              padding: 0.5rem;
-                              margin: 0.2rem;
-                              border: 1px solid black;
-                              border-radius: 1rem;
-                              cursor: pointer;
-                              flex: 0 0 auto;
-                              min-width: 7rem;
-                              ${colSelected.includes(col.id) &&
-                              "background-color: rgba(22, 160, 133, 0.7)"}
-                              ${isAvail && "cursor:default"};
-                            `}
-                          >
-                            <p>{col.colName}</p>{" "}
-                            {/* {isAvail && <p>(already available)</p>} */}
-                          </div>
+                          // <div
+                          //   key={col.id}
+                          //   onClick={(e) => !isAvail && handleOnClick(col.id)}
+                          //   css={css`
+                          //     padding: 0.5rem;
+                          //     margin: 0.2rem;
+                          //     border: 1px solid black;
+                          //     border-radius: 1rem;
+                          //     cursor: pointer;
+                          //     flex: 0 0 auto;
+                          //     min-width: 7rem;
+                          //     ${colSelected.includes(col.id) &&
+                          //     "background-color: rgba(22, 160, 133, 0.7)"}
+                          //     ${isAvail && "cursor:default"};
+                          //   `}
+                          // >
+                          //   <p>{col.colName}</p>{" "}
+                          // </div>
+                          <Link href={`/collections/${col.id}`}>
+                            <button
+                              css={css`
+                                background-color: #fff;
+                                border: 1px solid #d5d9d9;
+                                border-radius: 8px;
+                                box-shadow: rgba(213, 217, 217, 0.5) 0 2px 5px 0;
+                                box-sizing: border-box;
+                                color: #0f1111;
+                                cursor: pointer;
+                                display: inline-block;
+                                font-size: 1.2rem;
+                                padding: 1rem 1.2rem;
+                                line-height: 29px;
+                                position: relative;
+                                text-align: center;
+                                text-decoration: none;
+                                user-select: none;
+                                -webkit-user-select: none;
+                                touch-action: manipulation;
+                                vertical-align: middle;
+                                margin: 0.5rem;
+                                &:hover {
+                                  background-color: #f7fafa;
+                                }
+                                &:focus {
+                                  border-color: #008296;
+                                  box-shadow: rgba(213, 217, 217, 0.5) 0 2px 5px
+                                    0;
+                                  outline: 0;
+                                }
+                                @media (max-width: 768px) {
+                                  margin: 0.2rem 0.2rem;
+                                  padding: 0.6rem 0.6rem;
+                                  font-size: 0.8rem;
+                                }
+                              `}
+                              role="button"
+                            >
+                              {col.colName}
+                            </button>
+                          </Link>
                         );
                       }
                     })

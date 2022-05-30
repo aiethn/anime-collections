@@ -214,6 +214,9 @@ export default function AnimeDetailsID() {
                   justify-content: center;
                   align-items: center;
                   cursor: pointer;
+                  &:hover {
+                    color: rgba(101, 198, 187, 0.9);
+                  }
                 `}
               >
                 <FontAwesomeIcon
