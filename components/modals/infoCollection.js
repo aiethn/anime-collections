@@ -15,7 +15,7 @@ import {
   fetchCollections,
 } from "../../features/collections";
 
-export const AddItems = ({ setShowModalAdd, anime, usage, toggleBulk }) => {
+export const InfoCollection = ({ setShowModalInfo, anime }) => {
   const dispatch = useDispatch();
   const [colSelected, setColSelected] = useState([]);
   const [showInput, setShowInput] = useState(false);
@@ -23,63 +23,16 @@ export const AddItems = ({ setShowModalAdd, anime, usage, toggleBulk }) => {
   const allCol = useSelector((state) => state.collections.value);
   const [showErrorValid, setShowErrorValid] = useState("");
 
-  // console.log(anime, "anime");
-  // console.log(colSelected, "colSelected");
-
   useEffect(() => {
     dispatch(fetchCollections());
   }, []);
-
-  const handleOnSaveBulk = () => {
-    if (colSelected) {
-      for (var i = 0; i < colSelected.length; i++) {
-        for (var j = 0; j < anime.length; j++) {
-          // allCol.forEach(function (col) {
-          //   if (col.id === colSelected[i]) {
-          //     const isAvail = col.colItems.find(
-          //       (data) => data.animeName === anime[j].animeName
-          //     );
-          //     console.log(isAvail);
-          //     // col.colItems.forEach((anime) => console.log(anime));
-          //   }
-          // });
-          dispatch(addItemToCol({ id: colSelected[i], items: anime[j] }));
-          // console.log(colSelected[i], "colSelected");
-          // console.log(anime[j], "anime");
-          // const newVal = allCol.map(function (col) {
-          //   if (col.id === colSelected[i]) {
-          //     console.log(col, "col");
-          // const isAvail = col.colItems.find(
-          //   (anime) => anime.animeName === anime[j].animeName
-          // );
-          // if (!isAvail) {
-          //   const newItems = col.colItems
-          //     ? [...col.colItems, anime[j]]
-          //     : [anime[j]];
-          //   return {
-          //     id: colSelected[i],
-          //     colName: col.colName,
-          //     colItems: newItems,
-          //   };
-          // }
-          // else return col;
-          // }
-          // else return col;
-          // });
-          // console.log(newVal);
-        }
-      }
-      setShowModalAdd(true);
-      // toggleBulk(true);
-    }
-  };
 
   const handleOnSave = () => {
     if (colSelected) {
       colSelected.forEach((colID) => {
         dispatch(addItemToCol({ id: colID, items: anime }));
       });
-      setShowModalAdd(true);
+      setShowModalInfo(true);
     }
   };
 
@@ -189,7 +142,14 @@ export const AddItems = ({ setShowModalAdd, anime, usage, toggleBulk }) => {
                   font-weight: 700;
                 `}
               >
-                Add New Item To Collections
+                {anime.animeName}{" "}
+                <span
+                  css={css`
+                    font-weight: 300;
+                  `}
+                >
+                  Has Added in
+                </span>
               </p>
               {/* <p>Select Collection</p> */}
               <div
@@ -204,56 +164,34 @@ export const AddItems = ({ setShowModalAdd, anime, usage, toggleBulk }) => {
                   `}
                 >
                   {!showInput ? (
-                    usage === "bulk" ? (
-                      allCol.map((col) => (
-                        <div
-                          key={col.id}
-                          onClick={(e) => handleOnClick(col.id)}
-                          css={css`
-                            padding: 0.5rem;
-                            margin: 0.2rem;
-                            border: 1px solid black;
-                            border-radius: 1rem;
-                            cursor: pointer;
-                            flex: 0 0 auto;
-                            min-width: 7rem;
-                            ${colSelected.includes(col.id) &&
-                            "background-color: rgba(22, 160, 133, 0.7)"}
-                          `}
-                        >
-                          <p>{col.colName}</p>
-                        </div>
-                      ))
-                    ) : (
-                      allCol.map(function (col) {
-                        const isAvail = col.colItems.find(
-                          (x) => x?.animeID === anime.animeID
+                    allCol.map(function (col) {
+                      const isAvail = col.colItems.find(
+                        (x) => x?.animeID === anime.animeID
+                      );
+                      if (isAvail) {
+                        return (
+                          <div
+                            key={col.id}
+                            onClick={(e) => !isAvail && handleOnClick(col.id)}
+                            css={css`
+                              padding: 0.5rem;
+                              margin: 0.2rem;
+                              border: 1px solid black;
+                              border-radius: 1rem;
+                              cursor: pointer;
+                              flex: 0 0 auto;
+                              min-width: 7rem;
+                              ${colSelected.includes(col.id) &&
+                              "background-color: rgba(22, 160, 133, 0.7)"}
+                              ${isAvail && "cursor:default"};
+                            `}
+                          >
+                            <p>{col.colName}</p>{" "}
+                            {/* {isAvail && <p>(already available)</p>} */}
+                          </div>
                         );
-                        if (!isAvail) {
-                          return (
-                            <div
-                              key={col.id}
-                              onClick={(e) => !isAvail && handleOnClick(col.id)}
-                              css={css`
-                                padding: 0.5rem;
-                                margin: 0.2rem;
-                                border: 1px solid black;
-                                border-radius: 1rem;
-                                cursor: pointer;
-                                flex: 0 0 auto;
-                                min-width: 7rem;
-                                ${colSelected.includes(col.id) &&
-                                "background-color: rgba(22, 160, 133, 0.7)"}
-                                ${isAvail && "cursor:default"};
-                              `}
-                            >
-                              <p>{col.colName}</p>{" "}
-                              {/* {isAvail && <p>(already available)</p>} */}
-                            </div>
-                          );
-                        }
-                      })
-                    )
+                      }
+                    })
                   ) : (
                     <input
                       type="text"
@@ -350,133 +288,18 @@ export const AddItems = ({ setShowModalAdd, anime, usage, toggleBulk }) => {
                   }
                 `}
               >
-                {!showInput ? (
-                  <>
-                    <button
-                      onClick={(e) => {
-                        setShowModalAdd(true);
-                      }}
-                      css={css`
-                        padding-top: 0.5rem;
-                        padding-bottom: 0.5rem;
-                        padding-left: 1.25rem;
-                        padding-right: 1.25rem;
-                        margin-bottom: 0.5rem;
-                        margin-right: 1rem;
-                        background-color: rgba(207, 0, 15, 0.5);
-                        color: #4b5563;
-                        font-size: 0.875rem;
-                        line-height: 1.25rem;
-                        font-weight: 500;
-                        letter-spacing: 0.05em;
-                        border-radius: 9999px;
-                        border-width: 1px;
-                        border-color: rgba(207, 0, 15, 0.5);
-                        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-                        cursor: pointer;
-                        color: white;
-
-                        &:hover {
-                          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-                            0 4px 6px -2px rgba(0, 0, 0, 0.05);
-                          background-color: #f3f4f6;
-                          color: black;
-                        }
-
-                        @media (min-width: 768px) {
-                          margin-bottom: 0;
-                        }
-                      `}
-                    >
-                      Cancel
-                    </button>
-                    {colSelected.length > 0 && (
-                      <button
-                        onClick={
-                          usage === "bulk" ? handleOnSaveBulk : handleOnSave
-                        }
-                        css={css`
-                          padding-top: 0.5rem;
-                          padding-bottom: 0.5rem;
-                          padding-left: 1.25rem;
-                          padding-right: 1.25rem;
-                          margin-bottom: 0.5rem;
-                          margin-left: 1rem;
-                          background-color: rgba(27, 163, 156, 0.5);
-                          color: #4b5563;
-                          font-size: 0.875rem;
-                          line-height: 1.25rem;
-                          font-weight: 500;
-                          letter-spacing: 0.05em;
-                          border-radius: 9999px;
-                          border-width: 1px;
-                          border-color: rgba(27, 163, 156, 0.5);
-                          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-                          cursor: pointer;
-                          color: white;
-                          &:hover {
-                            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-                              0 4px 6px -2px rgba(0, 0, 0, 0.05);
-                            background-color: #f3f4f6;
-                            color: black;
-                          }
-                          @media (min-width: 768px) {
-                            margin-bottom: 0;
-                          }
-                        `}
-                      >
-                        Add Item
-                      </button>
-                    )}
-                  </>
-                ) : (
-                  <button
-                    onClick={(e) => setShowInput(false)}
-                    css={css`
-                      padding-top: 0.5rem;
-                      padding-bottom: 0.5rem;
-                      padding-left: 1.25rem;
-                      padding-right: 1.25rem;
-                      margin-bottom: 0.5rem;
-                      margin-right: 1rem;
-                      background-color: rgba(207, 0, 15, 0.5);
-                      color: #4b5563;
-                      font-size: 0.875rem;
-                      line-height: 1.25rem;
-                      font-weight: 500;
-                      letter-spacing: 0.05em;
-                      border-radius: 9999px;
-                      border-width: 1px;
-                      border-color: rgba(207, 0, 15, 0.5);
-                      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-                      cursor: pointer;
-                      color: white;
-
-                      &:hover {
-                        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-                          0 4px 6px -2px rgba(0, 0, 0, 0.05);
-                        background-color: #f3f4f6;
-                        color: black;
-                      }
-
-                      @media (min-width: 768px) {
-                        margin-bottom: 0;
-                      }
-                    `}
-                  >
-                    Cancel
-                  </button>
-                )}
                 <button
-                  onClick={(e) => handleOnSaveCol()}
+                  onClick={(e) => {
+                    setShowModalInfo(true);
+                  }}
                   css={css`
                     padding-top: 0.5rem;
                     padding-bottom: 0.5rem;
                     padding-left: 1.25rem;
                     padding-right: 1.25rem;
                     margin-bottom: 0.5rem;
-                    margin-left: 2rem;
-                    background-color: rgba(27, 163, 156, 0.5);
+                    margin-right: 1rem;
+                    background-color: rgba(207, 0, 15, 0.5);
                     color: #4b5563;
                     font-size: 0.875rem;
                     line-height: 1.25rem;
@@ -484,22 +307,24 @@ export const AddItems = ({ setShowModalAdd, anime, usage, toggleBulk }) => {
                     letter-spacing: 0.05em;
                     border-radius: 9999px;
                     border-width: 1px;
-                    border-color: rgba(27, 163, 156, 0.5);
+                    border-color: rgba(207, 0, 15, 0.5);
                     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
                     cursor: pointer;
                     color: white;
+
                     &:hover {
                       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
                         0 4px 6px -2px rgba(0, 0, 0, 0.05);
                       background-color: #f3f4f6;
                       color: black;
                     }
+
                     @media (min-width: 768px) {
                       margin-bottom: 0;
                     }
                   `}
                 >
-                  {!showInput ? "New Collection" : "Add Collection"}
+                  Close
                 </button>
               </div>
             </div>

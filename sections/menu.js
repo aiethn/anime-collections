@@ -60,7 +60,7 @@ export function Menu() {
                 display: flex;
                 justify-content: center;
                 width: 100%;
-                cursor: pointer;
+                // background-color: black;
               `}
             >
               <Link href="/">
@@ -72,6 +72,11 @@ export function Menu() {
                     font-weight: 700;
                     line-height: 1.25;
                     max-width: 24rem;
+                    cursor: pointer;
+                    border: 1px solid white;
+                    &:hover {
+                      border-color: black;
+                    }
                   `}
                 >
                   Anime List
@@ -80,12 +85,15 @@ export function Menu() {
               <Link href="/collections">
                 <a
                   css={css`
-                    padding-left: 1rem;
-                    padding-right: 1rem;
-                    padding-top: 0.75rem;
+                    padding: 0.75rem 1rem;
                     font-weight: 700;
                     line-height: 1.25;
                     max-width: 24rem;
+                    cursor: pointer;
+                    border: 1px solid white;
+                    &:hover {
+                      border-color: black;
+                    }
                   `}
                 >
                   Collections List

@@ -28,17 +28,26 @@ const collectionsSlice = createSlice({
     addItemToCol: (state, action) => {
       const newVal = state.value.map(function (col) {
         if (col.id === action.payload.id) {
-          const newItems = col.colItems
-            ? [...col.colItems, action.payload.items]
-            : [action.payload.items];
-          return {
-            id: action.payload.id,
-            colName: col.colName,
-            colItems: newItems,
-          };
+          const isAvail = col.colItems.find(
+            (anime) => anime.animeID === action.payload.items.animeID
+          );
+          if (!isAvail) {
+            const newItems = col.colItems
+              ? [...col.colItems, action.payload.items]
+              : [action.payload.items];
+            return {
+              id: action.payload.id,
+              colName: col.colName,
+              colItems: newItems,
+            };
+          } else return col;
         } else return col;
       });
-      state.value = newVal;
+      var uniqueNewVal = newVal.reduce(function (a, b) {
+        if (a.indexOf(b) < 0) a.push(b);
+        return a;
+      }, []);
+      state.value = uniqueNewVal;
     },
     removeCol: (state, action) => {
       const newVal = state.value.filter((col) => col.id !== action.payload);

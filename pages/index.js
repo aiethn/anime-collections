@@ -1,25 +1,51 @@
 import { css } from "@emotion/react";
 import { gql, useQuery } from "@apollo/client";
 import { Card } from "../components/card";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ReactPaginate from "react-paginate";
-import { useDispatch } from "react-redux";
-import { fetchCollections } from "../features/collections";
+import { ButtonClick } from "../components/buttonClick";
+import { faPencil, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { AddItems } from "../components/modals/addItems";
 
 export default function Home() {
-  const dispatch = useDispatch();
+  const [bulkAdd, setBulkAdd] = useState(false);
   const [idxpagination, setIdxPagination] = useState(1);
+  const [animeSelected, setAnimeSelected] = useState([]);
+  const [showModalAdd, setShowModalAdd] = useState(false);
   const { loading, error, data } = useQuery(GET_ALL_ANIME_DATA, {
     variables: { page: idxpagination, perPage: 10 },
   });
   const dataAnime = data?.Page.media;
 
-  // useEffect(() => {
-  //   dispatch(fetchCollections());
-  // }, []);
-
   const paginationHandler = (idx) => {
     setIdxPagination(idx.selected + 1);
+  };
+
+  const handleOnLongPress = (value) => {
+    setBulkAdd(true);
+    const isAvail = animeSelected.find(
+      (anime) => anime.animeID === value.animeID
+    );
+    if (!isAvail) {
+      if (animeSelected) {
+        setAnimeSelected((prev) => [...prev, value]);
+      } else {
+        setAnimeSelected([value]);
+      }
+    } else {
+      const newVal = animeSelected.filter(
+        (anime) => anime.animeID !== value.animeID
+      );
+      setAnimeSelected(newVal);
+      if (newVal.length === 0) {
+        setBulkAdd(false);
+      }
+    }
+  };
+
+  const handleOnCancel = () => {
+    setBulkAdd(false);
+    setAnimeSelected([]);
   };
 
   if (loading) {
@@ -31,7 +57,6 @@ export default function Home() {
     return null;
   }
 
-  console.log(data);
   return (
     <div
       css={css`
@@ -49,6 +74,36 @@ export default function Home() {
       >
         ANIME LIST
       </h1>
+      {/* BUTTON BULK ADD */}
+      {bulkAdd && (
+        <div
+          css={css`
+            display: flex;
+            justify-content: end;
+            margin-left: 3rem;
+            margin-right: 3rem;
+          `}
+        >
+          <div
+            css={css`
+              margin-right: 1rem;
+            `}
+          >
+            <ButtonClick
+              logo={faPlus}
+              text="Add To Collection"
+              onClick={setShowModalAdd}
+              toggleBulk={(e) => handleOnCancel(true)}
+            />
+          </div>
+          <ButtonClick
+            logo={faXmark}
+            handleOnCancel
+            text="Cancel"
+            onClick={handleOnCancel}
+          />
+        </div>
+      )}
       <div
         css={css`
           display: flex;
@@ -62,13 +117,16 @@ export default function Home() {
             title={char.title.english}
             titleNative={char.title.native}
             image={char.coverImage.large}
+            bulkAdd={bulkAdd}
+            isSelected={handleOnLongPress}
+            animeSelected={animeSelected}
           />
         ))}
       </div>
       <div>
         <ReactPaginate
-          previousLabel={"< Previous"}
-          nextLabel={"Next >"}
+          previousLabel={"<"}
+          nextLabel={">"}
           breakLabel={"..."}
           breakClassName={"break-me"}
           activeClassName={"active"}
@@ -77,10 +135,17 @@ export default function Home() {
           initialPage={idxpagination - 1}
           pageCount={data.Page.pageInfo.lastPage}
           marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
+          pageRangeDisplayed={3}
           onPageChange={paginationHandler}
         />
       </div>
+      {showModalAdd && (
+        <AddItems
+          setShowModalAdd={(e) => setShowModalAdd(!showModalAdd)}
+          anime={animeSelected}
+          usage="bulk"
+        />
+      )}
     </div>
   );
 }

@@ -3,18 +3,20 @@ import { css } from "@emotion/react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Rating from "react-rating";
+// import { Rating } from "react-simple-star-rating";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as faStarRegular } from "@fortawesome/free-regular-svg-icons";
 import {
+  faInfoCircle,
   faList,
   faStar as faStarSolid,
 } from "@fortawesome/free-solid-svg-icons";
-import { BackButton } from "../../components/backButton";
 import { ButtonClick } from "../../components/buttonClick";
 import { useEffect, useState } from "react";
 import { AddItems } from "../../components/modals/addItems";
 import { fetchCollections } from "../../features/collections";
 import { useDispatch } from "react-redux";
+import { InfoCollection } from "../../components/modals/infoCollection";
 
 const breakpoints = [640, 768, 1024, 1280, 1536];
 
@@ -26,6 +28,7 @@ export default function AnimeDetailsID() {
   const router = useRouter();
   const animeID = router.query["anime-id"];
   const [showModalAdd, setShowModalAdd] = useState(false);
+  const [showModalInfo, setShowModalInfo] = useState(false);
   const { loading, error, data } = useQuery(GET_ANIME_DETAILS, {
     variables: { id: animeID },
   });
@@ -46,7 +49,6 @@ export default function AnimeDetailsID() {
 
   return (
     <div>
-      {/* <BackButton pathBack={"/"} /> */}
       <div
         css={css`
           margin-left: auto;
@@ -73,12 +75,15 @@ export default function AnimeDetailsID() {
             css={css`
               filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
               padding: 0 1rem 0 2rem;
-              width: 60%;
+              width: 18rem;
               flex: none;
               justify-content: center;
               ${mq[1]} {
                 display: flex;
                 width: 40%;
+              }
+              ${maxq[1]} {
+                margin-left: 2rem;
               }
             `}
           >
@@ -125,6 +130,9 @@ export default function AnimeDetailsID() {
               css={css`
                 display: flex;
                 justify-content: space-between;
+                ${maxq[0]} {
+                  flex-direction: column;
+                }
               `}
             >
               <div
@@ -137,8 +145,8 @@ export default function AnimeDetailsID() {
                     padding-top: 1rem;
                     padding-right: 1rem;
                   `}
-                  emptySymbol={<FontAwesomeIcon icon={faStarRegular} />}
-                  fullSymbol={<FontAwesomeIcon icon={faStarSolid} />}
+                  // emptySymbol={<FontAwesomeIcon icon={faStarRegular} />}
+                  // fullSymbol={<FontAwesomeIcon icon={faStarSolid} />}
                   initialRating={dataAnime.averageScore / 20}
                   readonly
                 />
@@ -197,10 +205,38 @@ export default function AnimeDetailsID() {
             </div>
             <div
               css={css`
-                display: grid;
-                justify-items: end;
+                display: flex;
+                justify-content: space-between;
+                ${maxq[0]} {
+                  flex-direction: column;
+                }
               `}
             >
+              <div
+                onClick={setShowModalInfo}
+                css={css`
+                  display: inline-flex;
+                  text-align: center;
+                  justify-content: center;
+                  align-items: center;
+                  cursor: pointer;
+                `}
+              >
+                <FontAwesomeIcon
+                  css={css`
+                    width: 1.2rem;
+                    margin-right: 0.8rem;
+                  `}
+                  icon={faInfoCircle}
+                />
+                <p
+                  css={css`
+                    font-weight: 700;
+                  `}
+                >
+                  Collection Info
+                </p>
+              </div>
               <ButtonClick
                 logo={faList}
                 text="Add To Collection"
@@ -213,6 +249,18 @@ export default function AnimeDetailsID() {
       {showModalAdd && (
         <AddItems
           setShowModalAdd={(e) => setShowModalAdd(!showModalAdd)}
+          anime={{
+            animeID: animeID,
+            animeImage: dataAnime.coverImage.large,
+            animeName: dataAnime.title.english
+              ? dataAnime.title.english
+              : dataAnime.title.native,
+          }}
+        />
+      )}
+      {showModalInfo && (
+        <InfoCollection
+          setShowModalInfo={(e) => setShowModalInfo(!showModalInfo)}
           anime={{
             animeID: animeID,
             animeImage: dataAnime.coverImage.large,

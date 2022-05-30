@@ -43,17 +43,26 @@ export const localSave = (store) => (next) => (action) => {
       const localColArr = JSON.parse(localCol);
       const restCol = localColArr.map(function (col) {
         if (col.id === action.payload.id) {
-          const newItems = col.colItems
-            ? [...col.colItems, action.payload.items]
-            : [action.payload.items];
-          return {
-            id: action.payload.id,
-            colName: col.colName,
-            colItems: newItems,
-          };
+          const isAvail = col.colItems.find(
+            (anime) => anime.animeID === action.payload.items.animeID
+          );
+          if (!isAvail) {
+            const newItems = col.colItems
+              ? [...col.colItems, action.payload.items]
+              : [action.payload.items];
+            return {
+              id: action.payload.id,
+              colName: col.colName,
+              colItems: newItems,
+            };
+          } else return col;
         } else return col;
       });
-      window.localStorage.setItem("collections", JSON.stringify(restCol));
+      var uniqueNewVal = restCol.reduce(function (a, b) {
+        if (a.indexOf(b) < 0) a.push(b);
+        return a;
+      }, []);
+      window.localStorage.setItem("collections", JSON.stringify(uniqueNewVal));
     }
   } else if (action.type === "collections/removeItemFromCol") {
     const localCol = window.localStorage.getItem("collections");
