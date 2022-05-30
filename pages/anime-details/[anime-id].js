@@ -3,14 +3,8 @@ import { css } from "@emotion/react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Rating from "react-rating";
-// import { Rating } from "react-simple-star-rating";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar as faStarRegular } from "@fortawesome/free-regular-svg-icons";
-import {
-  faInfoCircle,
-  faList,
-  faStar as faStarSolid,
-} from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle, faList } from "@fortawesome/free-solid-svg-icons";
 import { ButtonClick } from "../../components/buttonClick";
 import { useEffect, useState } from "react";
 import { AddItems } from "../../components/modals/addItems";

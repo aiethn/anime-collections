@@ -1,12 +1,5 @@
 import { css } from "@emotion/react";
 import uuid from "react-uuid";
-import {
-  faArrowLeft,
-  faCheck,
-  faPlus,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -23,9 +16,6 @@ export const AddItems = ({ setShowModalAdd, anime, usage, toggleBulk }) => {
   const allCol = useSelector((state) => state.collections.value);
   const [showErrorValid, setShowErrorValid] = useState("");
 
-  // console.log(anime, "anime");
-  // console.log(colSelected, "colSelected");
-
   useEffect(() => {
     dispatch(fetchCollections());
   }, []);
@@ -34,43 +24,11 @@ export const AddItems = ({ setShowModalAdd, anime, usage, toggleBulk }) => {
     if (colSelected) {
       for (var i = 0; i < colSelected.length; i++) {
         for (var j = 0; j < anime.length; j++) {
-          // allCol.forEach(function (col) {
-          //   if (col.id === colSelected[i]) {
-          //     const isAvail = col.colItems.find(
-          //       (data) => data.animeName === anime[j].animeName
-          //     );
-          //     console.log(isAvail);
-          //     // col.colItems.forEach((anime) => console.log(anime));
-          //   }
-          // });
           dispatch(addItemToCol({ id: colSelected[i], items: anime[j] }));
-          // console.log(colSelected[i], "colSelected");
-          // console.log(anime[j], "anime");
-          // const newVal = allCol.map(function (col) {
-          //   if (col.id === colSelected[i]) {
-          //     console.log(col, "col");
-          // const isAvail = col.colItems.find(
-          //   (anime) => anime.animeName === anime[j].animeName
-          // );
-          // if (!isAvail) {
-          //   const newItems = col.colItems
-          //     ? [...col.colItems, anime[j]]
-          //     : [anime[j]];
-          //   return {
-          //     id: colSelected[i],
-          //     colName: col.colName,
-          //     colItems: newItems,
-          //   };
-          // }
-          // else return col;
-          // }
-          // else return col;
-          // });
-          // console.log(newVal);
         }
       }
       setShowModalAdd(true);
-      // toggleBulk(true);
+      toggleBulk(false);
     }
   };
 
@@ -280,24 +238,6 @@ export const AddItems = ({ setShowModalAdd, anime, usage, toggleBulk }) => {
                       `}
                     />
                   )}
-
-                  {/* {allCol.map((col) => (
-                    <div
-                      key={col.id}
-                      onClick={(e) => handleOnClick(col.id)}
-                      css={css`
-                        padding: 0.5rem;
-                        margin: 0.2rem;
-                        cursor: pointer;
-                        border: 1px solid black;
-                        min-width: 100px;
-                        ${colSelected.includes(col.id) &&
-                        "background-color: green"}
-                      `}
-                    >
-                      <p>{col.colName}</p>
-                    </div>
-                  ))} */}
                 </div>
                 {showErrorValid && (
                   <p
@@ -316,15 +256,6 @@ export const AddItems = ({ setShowModalAdd, anime, usage, toggleBulk }) => {
                       "No more then 16 characters!"}
                   </p>
                 )}
-                {/* {showSuccessSubmit && (
-                  <p
-                    css={css`
-                      color: green;
-                    `}
-                  >
-                    Collection Added!
-                  </p>
-                )} */}
               </div>
             </div>
             {/*footer*/}

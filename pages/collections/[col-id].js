@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import { BackButton } from "../../components/backButton";
 import { css } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import { CardCollection } from "../../components/cardCollection";
@@ -25,9 +24,6 @@ export default function CollectionDetailsID() {
   const [showModalRemove, setShowModalRemove] = useState(false);
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [removeAnime, setRemoveAnime] = useState("");
-  // const [colSelected, setColSelected] = useState("");
-  // const [itemSelected, setItemSelected] = useState("");
-  // const [isUpdate, setIsUpdate] = useState(false);
   const colID = router.query["col-id"];
   const colSelected = allCol?.find((col) => col.id == colID);
   const itemSelected = colSelected?.colItems;
@@ -36,17 +32,7 @@ export default function CollectionDetailsID() {
 
   useEffect(() => {
     dispatch(fetchCollections());
-    // setIsUpdate(true);
   }, []);
-
-  // useEffect(() => {
-  //   if (isUpdate) {
-  //     const colSelected = allCol.find((col) => col.id == colID);
-  //     setColSelected(colSelected);
-  //     const itemSelected = colSelected?.colItems;
-  //     setItemSelected(itemSelected);
-  //   }
-  // }, [allCol]);
 
   const handleOnRemove = (animeID, animeName) => {
     setShowModalRemove(true);
@@ -56,10 +42,6 @@ export default function CollectionDetailsID() {
   const handleOnEditCol = () => {
     setShowModalEdit(true);
   };
-
-  // if (isFetching) {
-  //   return <div>Loading</div>;
-  // }
 
   if (!colSelected)
     return (
@@ -84,7 +66,6 @@ export default function CollectionDetailsID() {
 
   return (
     <div>
-      {/* <BackButton pathBack={"/collections"} /> */}
       <div
         css={css`
           margin-left: auto;

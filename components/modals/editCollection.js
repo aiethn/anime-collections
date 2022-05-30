@@ -1,10 +1,7 @@
 import { css } from "@emotion/react";
-import { faArrowLeft, faCheck } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addItemToCol, addNewCol, editCol } from "../../features/collections";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { editCol } from "../../features/collections";
 
 export const EditCollection = ({ setShowModalEdit, colID, colName }) => {
   const dispatch = useDispatch();
@@ -149,15 +146,6 @@ export const EditCollection = ({ setShowModalEdit, colID, colName }) => {
                       "Name collection already exist!"}
                   </p>
                 )}
-                {/* {showSuccessSubmit && (
-                  <p
-                    css={css`
-                      color: green;
-                    `}
-                  >
-                    Collection Added!
-                  </p>
-                )} */}
               </div>
             </div>
             {/*footer*/}

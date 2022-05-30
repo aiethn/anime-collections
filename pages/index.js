@@ -4,7 +4,7 @@ import { Card } from "../components/card";
 import { useState } from "react";
 import ReactPaginate from "react-paginate";
 import { ButtonClick } from "../components/buttonClick";
-import { faPencil, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { AddItems } from "../components/modals/addItems";
 
 export default function Home() {
@@ -93,7 +93,6 @@ export default function Home() {
               logo={faPlus}
               text="Add To Collection"
               onClick={setShowModalAdd}
-              toggleBulk={(e) => handleOnCancel(true)}
             />
           </div>
           <ButtonClick
@@ -143,6 +142,7 @@ export default function Home() {
         <AddItems
           setShowModalAdd={(e) => setShowModalAdd(!showModalAdd)}
           anime={animeSelected}
+          toggleBulk={(e) => setBulkAdd(e)}
           usage="bulk"
         />
       )}

@@ -1,12 +1,5 @@
 import { css } from "@emotion/react";
 import uuid from "react-uuid";
-import {
-  faArrowLeft,
-  faCheck,
-  faPlus,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -218,24 +211,6 @@ export const InfoCollection = ({ setShowModalInfo, anime }) => {
                       `}
                     />
                   )}
-
-                  {/* {allCol.map((col) => (
-                    <div
-                      key={col.id}
-                      onClick={(e) => handleOnClick(col.id)}
-                      css={css`
-                        padding: 0.5rem;
-                        margin: 0.2rem;
-                        cursor: pointer;
-                        border: 1px solid black;
-                        min-width: 100px;
-                        ${colSelected.includes(col.id) &&
-                        "background-color: green"}
-                      `}
-                    >
-                      <p>{col.colName}</p>
-                    </div>
-                  ))} */}
                 </div>
                 {showErrorValid && (
                   <p
@@ -254,15 +229,6 @@ export const InfoCollection = ({ setShowModalInfo, anime }) => {
                       "No more then 16 characters!"}
                   </p>
                 )}
-                {/* {showSuccessSubmit && (
-                  <p
-                    css={css`
-                      color: green;
-                    `}
-                  >
-                    Collection Added!
-                  </p>
-                )} */}
               </div>
             </div>
             {/*footer*/}

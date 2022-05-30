@@ -112,30 +112,6 @@ export const RemoveItem = ({ setShowModalRemove, colID, anime }) => {
                     justify-content: center;
                   `}
                 ></div>
-                {/* {showErrorValid && (
-                  <p
-                    css={css`
-                      color: red;
-                    `}
-                  >
-                    {showErrorValid === "character" &&
-                      "No special characters allowed!"}
-                    {showErrorValid === "empty" && "Cannot Empty!"}
-                    {showErrorValid === "length" &&
-                      "No more then 16 characters!"}
-                    {showErrorValid === "avail" &&
-                      "Name collection already exist!"}
-                  </p>
-                )} */}
-                {/* {showSuccessSubmit && (
-                  <p
-                    css={css`
-                      color: green;
-                    `}
-                  >
-                    Collection Added!
-                  </p>
-                )} */}
               </div>
             </div>
             {/*footer*/}

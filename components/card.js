@@ -1,7 +1,6 @@
 import { css } from "@emotion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import useLongPress from "../middleware/longPress";
 
 const breakpoints = [640, 768, 1024, 1280, 1536];
@@ -20,16 +19,14 @@ export function Card(props) {
     animeSelected,
   } = props;
   const animeData = {
-    animeID: animeID,
+    animeID: animeID.toString(),
     animeImage: image,
     animeName: title ? title : titleNative,
   };
   const onLongPress = () => {
-    console.log("longpress is triggered");
     isSelected(animeData);
   };
   const onClick = () => {
-    console.log("click is triggered");
     if (bulkAdd) {
       isSelected(animeData);
     }
@@ -64,7 +61,9 @@ export function Card(props) {
           border-radius: 0.375rem;
           ${
             bulkAdd &&
-            animeSelected.find((anime) => anime.animeID === animeID) &&
+            animeSelected.find(
+              (anime) => anime.animeID === animeID.toString()
+            ) &&
             "background-color: rgba(101, 198, 187, 0.5);"
           }
           
