@@ -6,6 +6,7 @@ import ReactPaginate from "react-paginate";
 import { ButtonClick } from "../components/buttonClick";
 import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { AddItems } from "../components/modals/addItems";
+import { SkeletonHome } from "../components/skeleton/skeletonHome";
 
 export default function Home() {
   const [bulkAdd, setBulkAdd] = useState(false);
@@ -49,7 +50,7 @@ export default function Home() {
   };
 
   if (loading) {
-    return <h2>Loading...</h2>;
+    return <SkeletonHome />;
   }
 
   if (error) {

@@ -11,6 +11,7 @@ import { AddItems } from "../../components/modals/addItems";
 import { fetchCollections } from "../../features/collections";
 import { useDispatch } from "react-redux";
 import { InfoCollection } from "../../components/modals/infoCollection";
+import { SkeletonAnime } from "../../components/skeleton/skeletonAnime";
 
 const breakpoints = [640, 768, 1024, 1280, 1536];
 
@@ -33,7 +34,7 @@ export default function AnimeDetailsID() {
   }, []);
 
   if (loading) {
-    return <h2>Loading...</h2>;
+    return <SkeletonAnime />;
   }
 
   if (error) {
